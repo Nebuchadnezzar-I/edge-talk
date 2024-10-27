@@ -15,8 +15,6 @@ import {
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
 
-// SECRET: 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
-
 const qanda: { q: string, a: string }[] = [];
 
 export function SessionDialog() {
