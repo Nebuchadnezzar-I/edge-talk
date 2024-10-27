@@ -20,7 +20,7 @@ model Session {
     name           String
     negotiationId  String
     negotiation    Negotiation  @relation(fields: [negotiationId], references: [id])
-    questionAnswers String      @default("[]") // Store question-answer pairs as a JSON string
+    questionAnswers String      @default("[]")
 
     @@index([name])
 }

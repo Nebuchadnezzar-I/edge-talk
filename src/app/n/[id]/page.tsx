@@ -20,6 +20,9 @@ export default async function NegotiationPage({ params }: NegotiationPageProps) 
     const negotiationData =
         await api.negotiation.getById({ id: params.id ?? '' });
 
+    const sessionData =
+        await api.session.getAll({ negotiationID: params.id ?? '' });
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -35,7 +38,9 @@ export default async function NegotiationPage({ params }: NegotiationPageProps) 
                                 <div className="flex items-center justify-between w-full">
                                     <h1 className="font-bold">{negotiationData?.name}</h1>
                                     <div className="flex gap-3">
-                                        <SessionDialog />
+                                        <SessionDialog
+                                            nId={negotiationData?.id ?? ''}
+                                        />
                                         <NegotiationDelete
                                             id={negotiationData?.id ?? ''}
                                             name={negotiationData?.name ?? ''}
@@ -44,14 +49,19 @@ export default async function NegotiationPage({ params }: NegotiationPageProps) 
                                 </div>
 
                                 <Accordion type="single" collapsible className="w-full">
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                                        <AccordionContent>
-                                            Yes. It adheres to the WAI-ARIA design pattern.
-                                        </AccordionContent>
-                                    </AccordionItem>
+                                    {
+                                        sessionData?.map((session) => (
+                                            <AccordionItem key={session.id} value={session.id}>
+                                                <AccordionTrigger>
+                                                    {session.name}
+                                                </AccordionTrigger>
+                                                <AccordionContent>
+                                                    TODO: Implement session content
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))
+                                    }
                                 </Accordion>
-
                             </SidebarContent>
                         )
                 }

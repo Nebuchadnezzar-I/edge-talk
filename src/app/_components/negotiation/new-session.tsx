@@ -1,7 +1,9 @@
 "use client";
 
-import { GanttChart } from "lucide-react";
+import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 import { useState, useTransition } from "react";
+import { generateRandomString } from "~/app/_utils/math";
+import { createSession, generateNewQuestion } from "~/app/_utils/negotiation";
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -17,17 +19,35 @@ import { Textarea } from "~/components/ui/textarea"
 
 const qanda: { q: string, a: string }[] = [];
 
-export function SessionDialog() {
+interface SessionDialogProps {
+    nId: string;
+}
+
+export function SessionDialog({ nId }: SessionDialogProps) {
+    if (nId === '') throw new Error('Negotiation ID is required');
+
     const [userAnswer, setUserAnswer] = useState("");
     const [question, setQuestion] = useState("What is the session about?");
     const [loading, startTransition] = useTransition();
+    const [isDialogOpen, setIsDialogOpen] = useState(true);
 
     const handleCreate = () => {
         startTransition(async () => {
             try {
                 qanda.push({q: question, a: userAnswer });
-                console.log(JSON.stringify(qanda));
-                setQuestion("next");
+                const newQuestion = await generateNewQuestion(qanda);
+
+                console.log("New question", newQuestion);
+
+                // Fix somehow the API response, this is bad workaround
+                if (qanda.length >= 10) {
+                    await createSession(nId, generateRandomString(), qanda);
+                    setIsDialogOpen(false);
+                    window.location.reload();
+                    return;
+                }
+
+                setQuestion(newQuestion ?? "No more questions");
                 setUserAnswer("");
             } catch (error) {
                 console.error("Failed to generate the next question", error);
@@ -59,9 +79,18 @@ export function SessionDialog() {
                     <AlertDialogCancel>
                         Cancel
                     </AlertDialogCancel>
-                    <Button onClick={handleCreate} disabled={loading || !userAnswer}>
-                        {loading ? "Loading..." : "Next"}
-                    </Button>
+                    {
+                        isDialogOpen ?
+                        <Button onClick={handleCreate} disabled={loading || !userAnswer}>
+                            {loading ? "Loading..." : "Next"}
+                        </Button>
+                        :
+                        <Button variant="default">
+                            <AlertDialogAction onClick={handleCreate}>
+                                Finish
+                            </AlertDialogAction>
+                        </Button>
+                    }
                 </AlertDialogFooter>
 
             </AlertDialogContent>
