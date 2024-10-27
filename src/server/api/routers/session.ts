@@ -17,6 +17,18 @@ export const sessionRouter = createTRPCRouter({
         return sessions;
     }),
 
+    removeById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+        const session = await ctx.db.session.delete({
+            where: {
+                id: input.id,
+            },
+        });
+
+        return session;
+    }),
+
     newSession: publicProcedure
     .input(z.object({
         negotiationID: z.string(),

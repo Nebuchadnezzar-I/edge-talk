@@ -24,12 +24,13 @@ interface SessionDialogProps {
 }
 
 export function SessionDialog({ nId }: SessionDialogProps) {
-    if (nId === '') throw new Error('Negotiation ID is required');
 
     const [userAnswer, setUserAnswer] = useState("");
     const [question, setQuestion] = useState("What is the session about?");
     const [loading, startTransition] = useTransition();
     const [isDialogOpen, setIsDialogOpen] = useState(true);
+
+    if (nId === '') return null;
 
     const handleCreate = () => {
         startTransition(async () => {

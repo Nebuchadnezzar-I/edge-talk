@@ -14,9 +14,14 @@ export const removeNegotiation = async (id: string) => {
     await api.negotiation.removeById({ id });
 }
 
+export const removeSession = async (id: string) => {
+    "use server";
+    await api.session.removeById({ id });
+}
+
 const fetchQuestions = async (questionHistory: { q: string, a: string }[]): Promise<string | undefined> => {
     // Add key
-    const apiKey = "";
+    const apiKey = "sk-";
     const url = `https://api.openai.com/v1/chat/completions`;
 
     try {
