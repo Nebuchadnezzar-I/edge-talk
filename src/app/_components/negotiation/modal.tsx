@@ -31,10 +31,9 @@ export function NegotiationDialog() {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button className="w-full" variant="outline">Show Dialog</Button>
+                <Button className="w-full" variant="outline">Create negotiation</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
-
                 <AlertDialogHeader>
 
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

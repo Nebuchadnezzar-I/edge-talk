@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -15,6 +13,7 @@ import {
 import { Button } from "~/components/ui/button"
 import { Trash } from "lucide-react";
 import { removeNegotiation } from "~/app/_utils/negotiation";
+import { useRouter } from "next/navigation";
 
 interface NegotiationDeleteProps {
     id: string;
@@ -22,8 +21,11 @@ interface NegotiationDeleteProps {
 }
 
 export function NegotiationDelete({ id, name }: NegotiationDeleteProps) {
+    const router = useRouter();
+
     const handleCreate = async () => {
         await removeNegotiation(id);
+        router.push(`/n/0`);
         window.location.reload();
     }
 
@@ -37,14 +39,11 @@ export function NegotiationDelete({ id, name }: NegotiationDeleteProps) {
             <AlertDialogContent>
 
                 <AlertDialogHeader>
-
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-
                     <AlertDialogDescription className="flex flex-col">
                         <p>You are about to remove negotiation</p>
                         <strong>{name}</strong>
                     </AlertDialogDescription>
-
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
@@ -52,9 +51,7 @@ export function NegotiationDelete({ id, name }: NegotiationDeleteProps) {
                     <Button
                         variant="destructive"
                         onClick={handleCreate}
-                    >
-                        Delete
-                    </Button>
+                    >Delete</Button>
                 </AlertDialogFooter>
 
             </AlertDialogContent>

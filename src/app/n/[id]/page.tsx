@@ -8,6 +8,7 @@ import { NegotiationDelete } from "~/app/_components/negotiation/delete";
 import { AppSidebar } from "~/components/app-sidebar";
 import { SidebarContent, SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
 import { api } from "~/trpc/server";
+import { SessionDialog } from "~/app/_components/negotiation/new-session";
 
 interface NegotiationPageProps {
     params: {
@@ -20,46 +21,41 @@ export default async function NegotiationPage({ params }: NegotiationPageProps) 
         await api.negotiation.getById({ id: params.id ?? '' });
 
     return (
-        <div>
-            <SidebarProvider>
-                <AppSidebar />
-                <main className="p-5 w-full">
-                    <SidebarTrigger className="scale-[1.2]" />
-                    <SidebarContent className="py-3 w-full">
-                        <div className="flex items-center justify-between w-full">
-                            <h1 className="font-bold">{negotiationData?.name}</h1>
-                            <NegotiationDelete
-                                id={negotiationData?.id ?? ''}
-                                name={negotiationData?.name ?? ''}
-                            />
+        <SidebarProvider>
+            <AppSidebar />
+            <main className="p-5 w-full">
+                <SidebarTrigger className="scale-[1.2]" />
+                {
+                    params.id.length < 2 ? (
+                        <div className="flex items-center justify-center w-full h-full">
+                            <h1 className="text-xl font-bold">Select a negotiation</h1>
                         </div>
+                    ) : (
+                            <SidebarContent className="py-3 w-full">
+                                <div className="flex items-center justify-between w-full">
+                                    <h1 className="font-bold">{negotiationData?.name}</h1>
+                                    <div className="flex gap-3">
+                                        <SessionDialog />
+                                        <NegotiationDelete
+                                            id={negotiationData?.id ?? ''}
+                                            name={negotiationData?.name ?? ''}
+                                        />
+                                    </div>
+                                </div>
 
-                        <Accordion type="single" collapsible className="w-full">
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It adheres to the WAI-ARIA design pattern.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Is it styled?</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It comes with default styles that matches the other
-                                    components&apos; aesthetic.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-3">
-                                <AccordionTrigger>Is it animated?</AccordionTrigger>
-                                <AccordionContent>
-                                    Yes. It&apos;s animated by default, but you can disable it if you
-                                    prefer.
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
+                                <Accordion type="single" collapsible className="w-full">
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                                        <AccordionContent>
+                                            Yes. It adheres to the WAI-ARIA design pattern.
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
 
-                    </SidebarContent>
-                </main>
-            </SidebarProvider>
-        </div>
+                            </SidebarContent>
+                        )
+                }
+            </main>
+        </SidebarProvider>
     );
 }

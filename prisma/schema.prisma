@@ -8,8 +8,8 @@ datasource db {
 }
 
 model Negotiation {
-    id   String @id @default(uuid())
-    name String
+    id       String    @id @default(uuid())
+    name     String
     sessions Session[]
 
     @@index([name])
@@ -20,6 +20,8 @@ model Session {
     name           String
     negotiationId  String
     negotiation    Negotiation  @relation(fields: [negotiationId], references: [id])
+    questionAnswers String      @default("[]") // Store question-answer pairs as a JSON string
 
     @@index([name])
 }
+
